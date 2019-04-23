@@ -29,7 +29,7 @@ class MaskGenerator:
         face_rects = self._detector(gray_image, 0)
         return face_rects
 
-    def align(self, image, size=(240, 240), scale=2, warp=True, crop=True, resize=True,
+    def align(self, image, size=(240, 240), scale=1.8, warp=True, crop=True, resize=True,
               crop_function_version=0, align_multi=False, draw_landmarks=False):
         """
         warp and crop image
