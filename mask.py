@@ -1,7 +1,5 @@
 # coding=utf8
-
 from __future__ import absolute_import, division, print_function
-
 import dlib
 import cv2
 import numpy as np
