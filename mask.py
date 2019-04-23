@@ -22,12 +22,6 @@ class MaskGenerator:
         self._detector = dlib.get_frontal_face_detector()
         self._predictor = dlib.shape_predictor(landmarks_path)
 
-    def get_masked_face(self, image):
-        mask, img = self.align(image)
-        # cv2.imshow('mask', mask)
-        # cv2.waitKey(50)
-        return mask & img
-
     def bounding_boxes(self, image):
         # convert to gray image
         gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
