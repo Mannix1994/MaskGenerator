@@ -47,7 +47,7 @@ class MaskGenerator:
             face_rects = [rec.rect for rec in face_rects]
         return face_rects
 
-    MIN_ = 600
+    __MIN = 600
 
     def align(self, image, size=(240, 240), scale=1.8, warp=True, crop=True, resize=True,
               crop_function_version=0, align_multi=False, draw_landmarks=False):
@@ -71,15 +71,13 @@ class MaskGenerator:
         :return: tag of whether successfully process face image, mask,
                 image and landmark image(if draw_landmarks == True)
         """
-        print(image.shape)
         # check option
         if crop_function_version == 1 and align_multi:
             raise RuntimeError("When align_multi is true, crop_function_version must be 0")
         # if image is too big, resize to a smaller image
-        if np.min(image.shape[0:2]) > MaskGenerator.MIN_:
-            ratio = MaskGenerator.MIN_ / np.min(image.shape[0:2])
+        if np.min(image.shape[0:2]) > MaskGenerator.__MIN:
+            ratio = MaskGenerator.__MIN / np.min(image.shape[0:2])
             image = cv2.resize(image, dsize=(0, 0), fx=ratio, fy=ratio)
-        print(image.shape)
         # make border for image
         border = int(np.min(image.shape[0:2]) * 0.3)
         image = cv2.copyMakeBorder(image, border, border, border, border, cv2.BORDER_CONSTANT)
@@ -94,7 +92,7 @@ class MaskGenerator:
                 landmarks = np.array([[p.x, p.y] for p in self._predictor(original_image, face_rects[i]).parts()])
                 # draw landmarks
                 if draw_landmarks:
-                    landmark_image = self.draw_landmarks(original_image, landmarks)
+                    landmark_image = self._draw_landmarks(original_image, landmarks)
                     # remove border
                     _row, _col, _ = landmark_image.shape
                     landmark_image = landmark_image[border:_row-border, border:_col-border, :]
@@ -303,7 +301,7 @@ class MaskGenerator:
         return cropped_image
 
     @staticmethod
-    def draw_landmarks(image, landmarks):
+    def _draw_landmarks(image, landmarks):
         landmark_im = image.copy()
         for i, landmark in enumerate(landmarks):
             cv2.circle(landmark_im, tuple(landmark), 3, (0, 0, 255))
