@@ -32,7 +32,7 @@ class MaskGenerator:
     def align(self, image, size=(240, 240), scale=1.8, warp=True, crop=True, resize=True,
               crop_function_version=0, align_multi=False, draw_landmarks=False):
         """
-        warp and crop image
+        warp, crop and generate mask for face image
         https://blog.csdn.net/qq_39438636/article/details/79304130
 
         :param image: a BGR format face image
@@ -42,10 +42,14 @@ class MaskGenerator:
         :param warp: warp or not
         :param crop: crop or not
         :param resize: resize od not
-        :param crop_function_version: crop function version
-        :param align_multi: whther to detect multi face
+        :param crop_function_version: if crop_function_version is `0`,
+                `align` will try to detect all face in image. if
+                crop_function_version is `1`, `align` just try to detect
+                one face image. `0` is faster than `1`.
+        :param align_multi: whether to detect multi face
         :param draw_landmarks: whether draw face landmarks
-        :return: mask, image and whether successfully crop image
+        :return: tag of whether successfully process face image, mask,
+                image and landmark image(if draw_landmarks == True)
         """
         # check option
         if crop_function_version == 1 and align_multi:
