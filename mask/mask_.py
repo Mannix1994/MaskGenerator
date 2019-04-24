@@ -26,7 +26,7 @@ class MaskGenerator:
         # convert to gray image
         gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
         # get rect contains face
-        face_rects = self._detector(gray_image, 0)
+        face_rects = self._detector(gray_image, 1)
         return face_rects
 
     def align(self, image, size=(240, 240), scale=1.8, warp=True, crop=True, resize=True,
