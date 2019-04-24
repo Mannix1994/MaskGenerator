@@ -9,10 +9,10 @@ if __name__ == '__main__':
     LANDMARK_PATH = '/home/creator/Projects/DL/SfSNet-Pytorch/data/shape_predictor_68_face_landmarks.dat'
 
     images = glob.glob('Images/*.*')
-    mask_gen = MaskGenerator(LANDMARK_PATH)
+    mask_gen = MaskGenerator(LANDMARK_PATH, detector_version=1)
     for _path in images:
         _im = cv2.imread(_path)
-        ret = mask_gen.align(_im, warp=True, crop=True, resize=True, align_multi=True, draw_landmarks=False,
+        ret = mask_gen.align(_im, warp=True, crop=True, resize=True, align_multi=True, draw_landmarks=True,
                              size=(128, 128), scale=1.5, crop_function_version=0)
         for i, (tag, mask, face, landmark) in enumerate(ret):
             print('Detected face: %s, index： %d' % (tag, i))
