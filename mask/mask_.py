@@ -18,11 +18,11 @@ class MaskGenerator:
         http://dlib.net/files/shape_predictor_68_face_landmarks.dat.bz2
         """
         if not os.path.exists(landmarks_path):
-            raise RuntimeError('face landmark file is not exist. please download if from: \n'
+            raise RuntimeError('face landmark file is not exist. please download it from: \n'
                                'http://dlib.net/files/shape_predictor_68_face_landmarks.dat.bz2 '
                                'and uncompress it.')
         if not os.path.exists(FACE_DETECTOR_PATH):
-            raise RuntimeError('face detector model file is not exist. please download if from: \n'
+            raise RuntimeError('face detector model file is not exist. please download it from: \n'
                                'http://dlib.net/files/mmod_human_face_detector.dat.bz2 '
                                'and uncompress it to directory `mask`.')
         if detector_version == 0:
