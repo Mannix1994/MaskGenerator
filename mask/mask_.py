@@ -7,9 +7,11 @@ import os
 import sys
 from .functions import create_mask_by_landmarks
 
+FACE_DETECTOR_PATH = os.path.join(os.path.realpath(os.path.dirname(__file__)), 'mmod_human_face_detector.dat')
+
 
 class MaskGenerator:
-    def __init__(self, landmarks_path):
+    def __init__(self, landmarks_path, detector_version=1):
         """
         :param landmarks_path: the path of pretrained key points weight,
         it could be download from:
@@ -19,14 +21,30 @@ class MaskGenerator:
             raise RuntimeError('face landmark file is not exist. please download if from: \n'
                                'http://dlib.net/files/shape_predictor_68_face_landmarks.dat.bz2 '
                                'and uncompress it.')
-        self._detector = dlib.get_frontal_face_detector()
+        if not os.path.exists(FACE_DETECTOR_PATH):
+            raise RuntimeError('face detector model file is not exist. please download if from: \n'
+                               'http://dlib.net/files/mmod_human_face_detector.dat.bz2 '
+                               'and uncompress it to directory `mask`.')
+        if detector_version == 0:
+            # http://dlib.net/python/index.html#dlib.get_frontal_face_detector
+            self._detector = dlib.get_frontal_face_detector()
+        elif detector_version == 1:
+            # http://dlib.net/python/index.html#dlib.cnn_face_detection_model_v1
+            self._detector = dlib.cnn_face_detection_model_v1(FACE_DETECTOR_PATH)
+        else:
+            raise RuntimeError('detector_version should be 0 or 1')
+        self.__detector_version = detector_version
+        # http://dlib.net/python/index.html?highlight=dlib.shape_predictor#dlib.shape_predictor
         self._predictor = dlib.shape_predictor(landmarks_path)
 
     def bounding_boxes(self, image):
         # convert to gray image
         gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-        # get rect contains face
+        # get bounding boxes of faces
         face_rects = self._detector(gray_image, 1)
+        if self.__detector_version == 1:
+            # dlib.mmod_rectangle to dlib.rectangle
+            face_rects = [rec.rect for rec in face_rects]
         return face_rects
 
     def align(self, image, size=(240, 240), scale=1.8, warp=True, crop=True, resize=True,
