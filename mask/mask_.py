@@ -47,6 +47,8 @@ class MaskGenerator:
             face_rects = [rec.rect for rec in face_rects]
         return face_rects
 
+    MIN_ = 600
+
     def align(self, image, size=(240, 240), scale=1.8, warp=True, crop=True, resize=True,
               crop_function_version=0, align_multi=False, draw_landmarks=False):
         """
@@ -69,13 +71,15 @@ class MaskGenerator:
         :return: tag of whether successfully process face image, mask,
                 image and landmark image(if draw_landmarks == True)
         """
+        print(image.shape)
         # check option
         if crop_function_version == 1 and align_multi:
             raise RuntimeError("When align_multi is true, crop_function_version must be 0")
         # if image is too big, resize to a smaller image
-        if np.min(image.shape[0:2]) > 1000:
-            ratio = 1000 / np.min(image.shape[0:2])
+        if np.min(image.shape[0:2]) > MaskGenerator.MIN_:
+            ratio = MaskGenerator.MIN_ / np.min(image.shape[0:2])
             image = cv2.resize(image, dsize=(0, 0), fx=ratio, fy=ratio)
+        print(image.shape)
         # make border for image
         border = int(np.min(image.shape[0:2]) * 0.3)
         image = cv2.copyMakeBorder(image, border, border, border, border, cv2.BORDER_CONSTANT)
